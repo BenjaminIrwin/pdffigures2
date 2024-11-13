@@ -1,5 +1,5 @@
 lazy val scala212 = "2.12.20"
-lazy val scala213 = "2.13.15" // Not supported yet (collections changes required in common)
+lazy val scala213 = "2.13.15"
 lazy val supportedScalaVersions = List(scala212, scala213)
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
