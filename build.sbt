@@ -67,11 +67,13 @@ lazy val root = (project in file("."))
     .settings(projectSettings)
 
 Compile / run / mainClass := Some("org.allenai.pdffigures2.FigureExtractorBatchCli")
+Compile / mainClass := Some("org.allenai.pdffigures2.FigureExtractorBatchCli")
 assembly / mainClass := Some("org.allenai.pdffigures2.FigureExtractorBatchCli")
 assembly / assemblyOutputPath := file("pdffigures2.jar")
 
 assembly / assemblyMergeStrategy := {
   case x if x.endsWith("module-info.class") => MergeStrategy.discard
+  case PathList("META-INF", "versions", "9", "OSGI-INF", "MANIFEST.MF") => MergeStrategy.first
   case PathList("org", "apache", "commons", xs @ _*) => MergeStrategy.first
   case x =>
     val oldStrategy = (assembly / assemblyMergeStrategy).value
