@@ -12,3 +12,5 @@ evaluation/datasets/**/*.pgm
 *.pkl
 
 /.bsp
+
+*.jar
