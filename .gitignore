@@ -10,3 +10,5 @@ evaluation/datasets/**/*.jpg
 evaluation/datasets/**/*.pgm
 
 *.pkl
+
+/.bsp

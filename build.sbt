@@ -1,13 +1,12 @@
-lazy val scala211 = "2.11.12"
-lazy val scala212 = "2.12.16"
+lazy val scala212 = "2.12.20"
 lazy val scala213 = "2.13.8" // Not supported yet (collections changes required in common)
-lazy val supportedScalaVersions = List(scala212, scala211)
+lazy val supportedScalaVersions = List(scala212, scala213)
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 ThisBuild / organization := "org.allenai"
 ThisBuild / description  := "Scala library to extract figures, tables, and captions from scholarly documents"
-ThisBuild / scalaVersion := scala212
+ThisBuild / scalaVersion := scala213
 ThisBuild / version      := "0.1.0"
 
 lazy val projectSettings = Seq(
@@ -27,11 +26,11 @@ lazy val projectSettings = Seq(
   libraryDependencies ++= Seq(
     "io.spray" %% "spray-json" % "1.3.6",
     "com.github.scopt" %% "scopt" % "4.1.0",
-    "ch.qos.logback" % "logback-classic" % "1.2.11",
-    "org.slf4j" % "jcl-over-slf4j" % "1.7.36",
-    "org.apache.pdfbox" % "pdfbox" % "2.0.26",
-    "org.apache.pdfbox" % "fontbox" % "2.0.26",
-    "com.typesafe" % "config" % "1.4.2",
+    "ch.qos.logback" % "logback-classic" % "1.5.6",
+    "org.slf4j" % "jcl-over-slf4j" % "2.0.13",
+    "org.apache.pdfbox" % "pdfbox" % "3.0.2",
+    "org.apache.pdfbox" % "fontbox" % "3.0.2",
+    "com.typesafe" % "config" % "1.4.3",
 
     // So PDFBox can parse more image formats
     // These are disabled by default, because they are not licensed flexibly enough.
@@ -40,11 +39,11 @@ lazy val projectSettings = Seq(
 //    "com.levigo.jbig2" % "levigo-jbig2-imageio" % "2.0", // For handling jbig2 images
 
     // So PDFBox can parse security enabled but still readable PDFs
-    "org.bouncycastle" % "bcprov-jdk18on" % "1.71",
-    "org.bouncycastle" % "bcmail-jdk18on" % "1.71",
-    "org.bouncycastle" % "bcpkix-jdk18on" % "1.71",
+    "org.bouncycastle" % "bcprov-jdk18on" % "1.78.1",
+    "org.bouncycastle" % "bcmail-jdk18on" % "1.78.1",
+    "org.bouncycastle" % "bcpkix-jdk18on" % "1.78.1",
 
-    "org.scalatest" %% "scalatest" % "3.2.13" % Test
+    "org.scalatest" %% "scalatest" % "3.2.19" % Test
   ),
 
   pomExtra :=
