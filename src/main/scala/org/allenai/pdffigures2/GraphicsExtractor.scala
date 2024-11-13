@@ -1,7 +1,6 @@
 package org.allenai.pdffigures2
 
 import org.allenai.pdffigures2.FigureExtractor.OcredPdfException
-
 import org.apache.pdfbox.pdmodel.PDDocument
 
 object GraphicsExtractor extends Logging {

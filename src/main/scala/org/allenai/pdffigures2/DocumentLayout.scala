@@ -2,7 +2,8 @@ package org.allenai.pdffigures2
 
 import org.apache.pdfbox.pdmodel.font.PDFont
 
-import scala.collection.{ immutable, mutable }
+import scala.collection.immutable
+import scala.collection.mutable
 
 /** Store some statistics about the document as a whole */
 case class DocumentLayout(

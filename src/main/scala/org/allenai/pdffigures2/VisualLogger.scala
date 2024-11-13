@@ -1,13 +1,14 @@
 package org.allenai.pdffigures2
 
+import org.allenai.pdffigures2.Box
 import org.allenai.pdffigures2.SectionedTextBuilder.DocumentSection
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.rendering.PDFRenderer
-import java.awt.event.{ ActionEvent, KeyEvent }
+
 import java.awt._
+import java.awt.event.ActionEvent
+import java.awt.event.KeyEvent
 import java.awt.image.BufferedImage
-import javax.imageio.ImageIO
-import java.io.File
 import javax.swing._
 
 case class Annotations(
@@ -56,7 +57,7 @@ class VisualLogger(
   val SectionsKey = "Sections"
 
   // Ordered in how they will be shown to the user
-  val ReservedKeys = Seq(
+  val ReservedKeys: Seq[String] = Seq(
     GraphicsClusterKey,
     TextAndGraphicsExtractionKey,
     CaptionLocationKey,
@@ -89,7 +90,7 @@ class VisualLogger(
     if (pagesToShow.nonEmpty) {
       val renderer = new PDFRenderer(doc)
       val visualizationPerPage = pagesToShow.map { pageNum =>
-        val pageImg = renderer.renderImageWithDPI(pageNum, dpi)
+        val pageImg = renderer.renderImageWithDPI(pageNum, dpi.toFloat)
         val imagesToShow = keysToShow.map { key =>
           val annotations = logs(key).getOrElse(pageNum, Seq())
           val img = cloneImage(pageImg)
@@ -99,7 +100,7 @@ class VisualLogger(
             val dash = if (annotation.dashed) Array[Float](2) else null
             g.setStroke(
               new BasicStroke(
-                annotation.thickness,
+                annotation.thickness.toFloat,
                 BasicStroke.CAP_BUTT,
                 BasicStroke.JOIN_BEVEL,
                 0.0f,
@@ -177,13 +178,13 @@ class VisualLogger(
       // So our frame can be closed by hot key, on OSX this means at least Cmd-W works
       val closeKey = KeyStroke.getKeyStroke(
         KeyEvent.VK_W,
-        Toolkit.getDefaultToolkit.getMenuShortcutKeyMask
+        Toolkit.getDefaultToolkit.getMenuShortcutKeyMaskEx
       )
       panel.getInputMap.put(closeKey, "closeWindow")
       panel.getActionMap.put(
         "closeWindow",
         new AbstractAction("Close Window") {
-          override def actionPerformed(e: ActionEvent) {
+          override def actionPerformed(e: ActionEvent): Unit = {
             frame.setVisible(false)
             frame.dispose()
           }

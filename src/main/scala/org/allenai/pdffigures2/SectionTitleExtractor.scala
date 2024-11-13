@@ -181,7 +181,7 @@ object SectionTitleExtractor extends Logging {
 
     def build(line: Line): SectionTitle = {
       val fountCounts = line.words.flatMap(w => w.positions.map(_.getFont)).groupBy(identity)
-      val mostCommonFont = fountCounts.mapValues(_.size).maxBy(_._2)._1
+      val mostCommonFont = fountCounts.view.mapValues(_.size).maxBy(_._2)._1
       val fontSizes = line.words.flatMap(w => w.positions.map(_.getFontSizeInPt))
       val medianFontSize = fontSizes.sorted.drop(fontSizes.size / 2).head
       SectionTitle(List(line), line.boundary, isPrefixed(line), mostCommonFont, medianFontSize)
@@ -235,7 +235,7 @@ object SectionTitleExtractor extends Logging {
   ): Seq[PageWithClassifiedText] = {
     val (strippedTextPages, sectionHeaders) =
       stripSectionTitlesFromSortedParagraphs(pages.map(_.paragraphs), layout).unzip
-    (pages, strippedTextPages, sectionHeaders).zipped.map {
+    pages.lazyZip(strippedTextPages).lazyZip(sectionHeaders).map {
       case (page, strippedText, pageSectionHeaders) =>
         PageWithClassifiedText(
           page.pageNumber,

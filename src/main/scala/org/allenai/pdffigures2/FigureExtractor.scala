@@ -1,13 +1,12 @@
 package org.allenai.pdffigures2
 
-import org.allenai.pdffigures2.FigureExtractor.{
-  Document,
-  DocumentContent,
-  DocumentWithRasterizedFigures
-}
-import org.allenai.pdffigures2.SectionedTextBuilder.{ DocumentSection, PdfText }
-
-import com.typesafe.config.ConfigFactory
+import org.allenai.pdffigures2.FigureExtractor.Document
+import org.allenai.pdffigures2.FigureExtractor.DocumentContent
+import org.allenai.pdffigures2.FigureExtractor.DocumentWithRasterizedFigures
+import org.allenai.pdffigures2.SectionedTextBuilder.DocumentSection
+import org.allenai.pdffigures2.SectionedTextBuilder.PdfText
+import org.apache.pdfbox.Loader
+import org.apache.pdfbox.io.RandomAccessReadBuffer
 import org.apache.pdfbox.pdmodel.PDDocument
 
 import java.io.InputStream
@@ -209,9 +208,9 @@ object FigureExtractor {
     pagesWithFigures: Seq[PageWithFigures],
     pagesWithoutFigures: Seq[PageWithClassifiedText]
   ) {
-    val pages = (pagesWithFigures ++ pagesWithoutFigures).sortBy(_.pageNumber)
-    def figures = pagesWithFigures.flatMap(_.figures)
-    def failedCaptions = pagesWithFigures.flatMap(_.failedCaptions)
+    val pages: Seq[ClassifiedPage] = (pagesWithFigures ++ pagesWithoutFigures).sortBy(_.pageNumber)
+    def figures: Seq[Figure] = pagesWithFigures.flatMap(_.figures)
+    def failedCaptions: Seq[Caption] = pagesWithFigures.flatMap(_.failedCaptions)
     require(pages.head.pageNumber == 0, "Must start with page number 0")
     require(
       pages
@@ -239,9 +238,9 @@ object FigureExtractor {
     private val figureExtractor = new FigureExtractor(true, true, true, true, true)
 
     def fromInputStream(is: InputStream): Document =
-      fromPDDocument(PDDocument.load(is))
+      fromPDDocument(Loader.loadPDF(new RandomAccessReadBuffer(is)))
 
-    def fromPDDocument(pdDocument: PDDocument) =
+    def fromPDDocument(pdDocument: PDDocument): Document =
       figureExtractor.getFiguresWithText(pdDocument)
   }
 

@@ -3,6 +3,7 @@ package org.allenai.pdffigures2
 import org.apache.pdfbox.text.TextPosition
 
 import java.text.Normalizer
+import scala.util.matching.Regex
 
 /** Span of text denoted by the starting and ending line number, inclusive */
 case class TextSpan(start: Int, end: Int) extends Ordered[TextSpan] {
@@ -12,7 +13,7 @@ case class TextSpan(start: Int, end: Int) extends Ordered[TextSpan] {
 }
 
 object Paragraph {
-  val unprintableRegex = """[\p{Cc}\p{Cf}\p{Co}\p{Cn}]""".r
+  val unprintableRegex: Regex = """[\p{Cc}\p{Cf}\p{Co}\p{Cn}]""".r
 
   def apply(lines: List[Line]): Paragraph = Paragraph(lines, Box.container(lines.map(_.boundary)))
 

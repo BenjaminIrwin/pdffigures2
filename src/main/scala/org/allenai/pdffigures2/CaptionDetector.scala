@@ -1,6 +1,7 @@
 package org.allenai.pdffigures2
 
 import org.apache.pdfbox.pdmodel.font.PDFont
+
 import FigureType._
 
 case class CaptionStart(
@@ -14,12 +15,12 @@ case class CaptionStart(
   paragraphStart: Boolean,
   lineEnd: Boolean
 ) {
-  val figId = (figType, name)
-  val colonMatch = numberSyntax == ":"
-  val periodMatch = numberSyntax == "."
-  val allCapsFig = header.startsWith("FIG")
-  val allCapsTable = header == "TABLE"
-  val figAbbreviated = header == "Fig."
+  val figId: (FigureType.FigureType, String) = (figType, name)
+  val colonMatch: Boolean = numberSyntax == ":"
+  val periodMatch: Boolean = numberSyntax == "."
+  val allCapsFig: Boolean = header.startsWith("FIG")
+  val allCapsTable: Boolean = header == "TABLE"
+  val figAbbreviated: Boolean = header == "Fig."
 }
 
 object CaptionDetector extends Logging {
@@ -54,7 +55,7 @@ object CaptionDetector extends Logging {
     standardFont: PDFont,
     types: Set[FigureType]
   ) extends CandidateFilter {
-    val name = s"Non Standard Font: ${types.toList}"
+    val name: String = s"Non Standard Font: ${types.toList}"
     def accept(cc: CaptionStart): Boolean =
       !types.contains(cc.figType) ||
         cc.line.words.head.positions.head.getFont != standardFont
@@ -91,7 +92,7 @@ object CaptionDetector extends Logging {
   }
 
   private case class LeftAlignedOnly(figureOnly: Boolean) extends CandidateFilter {
-    val name = "Left Aligned" + (if (figureOnly) " Figures" else "")
+    val name: String = "Left Aligned" + (if (figureOnly) " Figures" else "")
     def accept(cc: CaptionStart): Boolean = {
       figureOnly && cc.figType == FigureType.Table || (if (cc.nextLine.isDefined) {
                                                          Math.abs(
@@ -255,7 +256,7 @@ object CaptionDetector extends Logging {
         }
         if (!removedAny) {
           logger.debug(
-            s"Filtered for paragraph starts, " +
+            "Filtered for paragraph starts, " +
               s"${groupedById.values.map(_.size).sum} remaining"
           )
         }

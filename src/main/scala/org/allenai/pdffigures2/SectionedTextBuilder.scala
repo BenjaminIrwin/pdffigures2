@@ -40,9 +40,9 @@ object SectionedTextBuilder {
     * @param paragraphs section text broken up into paragraphs
     */
   case class DocumentSection(title: Option[PdfText], paragraphs: Seq[PdfText]) {
-    def titleText = title.map(_.text)
-    def paragraphsText = paragraphs.map(_.text)
-    def bodyText = paragraphsText.mkString("\n")
+    def titleText: Option[String] = title.map(_.text)
+    def paragraphsText: Seq[String] = paragraphs.map(_.text)
+    def bodyText: String = paragraphsText.mkString("\n")
   }
 
   @tailrec

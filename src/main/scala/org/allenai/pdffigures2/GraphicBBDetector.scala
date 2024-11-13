@@ -3,12 +3,13 @@ package org.allenai.pdffigures2
 import org.apache.pdfbox.contentstream.PDFGraphicsStreamEngine
 import org.apache.pdfbox.contentstream.operator.Operator
 import org.apache.pdfbox.contentstream.operator.OperatorProcessor
-import org.apache.pdfbox.cos.{ COSBase, COSName }
+import org.apache.pdfbox.cos.COSBase
+import org.apache.pdfbox.cos.COSName
 import org.apache.pdfbox.pdmodel.PDPage
 import org.apache.pdfbox.pdmodel.graphics.color.PDColor
-import org.apache.pdfbox.util.Matrix
 import org.apache.pdfbox.pdmodel.graphics.image.PDImage
 import org.apache.pdfbox.pdmodel.graphics.state.PDSoftMask
+import org.apache.pdfbox.util.Matrix
 
 import java.awt.Rectangle
 import java.awt.geom._
@@ -51,9 +52,9 @@ object GraphicBBDetector {
 class GraphicBBDetector(page: PDPage, ignoreWhite: Boolean) extends PDFGraphicsStreamEngine(page) {
   var clipWindingRule: Int = -1
   var linePath: GeneralPath = new GeneralPath
-  var bounds = List[Rectangle]()
+  var bounds: List[Rectangle] = List[Rectangle]()
 
-  class NullOp(val name: String) extends OperatorProcessor {
+  class NullOp(val name: String) extends OperatorProcessor(this) {
     override def process(operator: Operator, operands: java.util.List[COSBase]): Unit = {}
     def getName: String = name
   }
@@ -90,7 +91,7 @@ class GraphicBBDetector(page: PDPage, ignoreWhite: Boolean) extends PDFGraphicsS
     super.processOperator(operator, operands)
   }
 
-  override def appendRectangle(p0: Point2D, p1: Point2D, p2: Point2D, p3: Point2D) {
+  override def appendRectangle(p0: Point2D, p1: Point2D, p2: Point2D, p3: Point2D): Unit = {
     linePath.moveTo(p0.getX.toFloat, p0.getY.toFloat)
     linePath.lineTo(p1.getX.toFloat, p1.getY.toFloat)
     linePath.lineTo(p2.getX.toFloat, p2.getY.toFloat)
@@ -111,37 +112,37 @@ class GraphicBBDetector(page: PDPage, ignoreWhite: Boolean) extends PDFGraphicsS
     }
   }
 
-  override def strokePath() {
+  override def strokePath(): Unit = {
     addLinePath(true, false)
     linePath.reset()
   }
 
-  override def fillPath(windingRule: Int) {
+  override def fillPath(windingRule: Int): Unit = {
     linePath.setWindingRule(windingRule)
     addLinePath(false, true)
     linePath.reset()
   }
 
-  override def fillAndStrokePath(windingRule: Int) {
+  override def fillAndStrokePath(windingRule: Int): Unit = {
     linePath.setWindingRule(windingRule)
     addLinePath(true, true)
     linePath.reset()
   }
 
-  override def clip(windingRule: Int) = clipWindingRule = windingRule
+  override def clip(windingRule: Int): Unit = clipWindingRule = windingRule
 
-  override def moveTo(x: Float, y: Float) = linePath.moveTo(x, y)
+  override def moveTo(x: Float, y: Float): Unit = linePath.moveTo(x, y)
 
-  override def lineTo(x: Float, y: Float) = linePath.lineTo(x, y)
+  override def lineTo(x: Float, y: Float): Unit = linePath.lineTo(x, y)
 
-  override def curveTo(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float) =
+  override def curveTo(x1: Float, y1: Float, x2: Float, y2: Float, x3: Float, y3: Float): Unit =
     linePath.curveTo(x1, y1, x2, y2, x3, y3)
 
   override def getCurrentPoint: Point2D = linePath.getCurrentPoint
 
-  override def closePath() = linePath.closePath()
+  override def closePath(): Unit = linePath.closePath()
 
-  override def endPath() {
+  override def endPath(): Unit = {
     if (clipWindingRule != -1) {
       linePath.setWindingRule(clipWindingRule)
       getGraphicsState.intersectClippingPath(linePath)
@@ -150,7 +151,7 @@ class GraphicBBDetector(page: PDPage, ignoreWhite: Boolean) extends PDFGraphicsS
     linePath.reset()
   }
 
-  override def drawImage(pdImage: PDImage) {
+  override def drawImage(pdImage: PDImage): Unit = {
     val clipBounds = getGraphicsState.getCurrentClippingPath.getBounds
     if (clipBounds.getHeight * clipBounds.getWidth > 0) {
       val ctm: Matrix = getGraphicsState.getCurrentTransformationMatrix
@@ -177,7 +178,7 @@ class GraphicBBDetector(page: PDPage, ignoreWhite: Boolean) extends PDFGraphicsS
     }
   }
 
-  override def shadingFill(shadingName: COSName) {
+  override def shadingFill(shadingName: COSName): Unit = {
     val newBound = getGraphicsState.getCurrentClippingPath.getBounds
     if (newBound.getWidth > 0 && newBound.getHeight > 0) {
       bounds = newBound :: bounds

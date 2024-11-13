@@ -1,6 +1,7 @@
 package org.allenai.pdffigures2
 
-import org.apache.pdfbox.pdmodel.PDDocument
+import org.apache.pdfbox.Loader
+import org.apache.pdfbox.io.RandomAccessReadBuffer
 import org.scalatest.funsuite.AnyFunSuite
 
 /** These tests verify that figure extraction filters are successfully catching and removing bad
@@ -26,9 +27,11 @@ class TestExtractionFilters extends AnyFunSuite {
     * These extractions should be filtered out for being too close to the page boundary.
     */
   test("Page boundary filter should filter out bad extractions") {
-    val pdf = PDDocument.load(
-      getClass.getClassLoader.getResourceAsStream(
-        "test-pdfs/f63cb20759fab2514802c3ef2a743c76bf9dc9f1.pdf"
+    val pdf = Loader.loadPDF(
+      new RandomAccessReadBuffer(
+        getClass.getClassLoader.getResourceAsStream(
+          "test-pdfs/f63cb20759fab2514802c3ef2a743c76bf9dc9f1.pdf"
+        )
       )
     )
     val figures = extractor.getFigures(pdf)
@@ -41,9 +44,11 @@ class TestExtractionFilters extends AnyFunSuite {
     * This extraction should be filtered out for splitting a figure.
     */
   test("Graphics split filter should filter out bad extractions") {
-    val pdf = PDDocument.load(
-      getClass.getClassLoader.getResourceAsStream(
-        "test-pdfs/3a9202f9f176d3377516e3da0866cc19148c033b.pdf"
+    val pdf = Loader.loadPDF(
+      new RandomAccessReadBuffer(
+        getClass.getClassLoader.getResourceAsStream(
+          "test-pdfs/3a9202f9f176d3377516e3da0866cc19148c033b.pdf"
+        )
       )
     )
     val figures = extractor.getFigures(pdf, pages = Some(Seq(6)))
@@ -54,9 +59,11 @@ class TestExtractionFilters extends AnyFunSuite {
     * This ensures that when figures are empty, it's not because figure extraction is broken.
     */
   test("Figures should all be extracted") {
-    val pdf = PDDocument.load(
-      getClass.getClassLoader.getResourceAsStream(
-        "test-pdfs/498bb0efad6ec15dd09d941fb309aa18d6df9f5f.pdf"
+    val pdf = Loader.loadPDF(
+      new RandomAccessReadBuffer(
+        getClass.getClassLoader.getResourceAsStream(
+          "test-pdfs/498bb0efad6ec15dd09d941fb309aa18d6df9f5f.pdf"
+        )
       )
     )
     val figures = extractor.getFigures(pdf).toList

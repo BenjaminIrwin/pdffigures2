@@ -70,8 +70,8 @@ case class PageWithBodyText(
   override def paragraphs: Seq[Paragraph] = (bodyText ++ otherText).sorted
   def nonFigureText: Seq[Paragraph] = bodyText ++ captions.map(_.paragraph)
   def nonFigureContent: Seq[Box] = nonFigureText.map(_.boundary) ++ nonFigureGraphics
-  def possibleFigureContent = graphics ++ otherText.map(_.boundary)
-  def allContent = possibleFigureContent ++ nonFigureContent
+  def possibleFigureContent: Seq[Box] = graphics ++ otherText.map(_.boundary)
+  def allContent: Seq[Box] = possibleFigureContent ++ nonFigureContent
 }
 
 case class PageWithFigures(

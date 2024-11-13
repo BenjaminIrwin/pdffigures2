@@ -1,12 +1,14 @@
 package org.allenai.pdffigures2
 
 import org.apache.pdfbox.cos.COSBase
-import org.apache.pdfbox.pdmodel.common.PDRectangle
-import org.apache.pdfbox.pdmodel.{ PDDocument, PDPage }
-import org.apache.pdfbox.text.{ PDFTextStripper, TextPosition }
+import org.apache.pdfbox.pdmodel.PDDocument
+import org.apache.pdfbox.pdmodel.PDPage
+import org.apache.pdfbox.text.PDFTextStripper
+import org.apache.pdfbox.text.TextPosition
 
 import java.io.Writer
-import scala.collection.{ immutable, mutable }
+import scala.collection.immutable
+import scala.collection.mutable
 
 object TextExtractor {
 
@@ -140,7 +142,7 @@ private class TextExtractor extends PDFTextStripper with Logging {
         // PDFBox can occasionally wildly overestimate the height of text, so if things look really
         // wrong we clip the text to a sensible amount
         val height = if (pos.getHeight > TextExtractor.MinHeightToClipText) {
-          TextExtractor.HeightToCLipTextTo
+          TextExtractor.HeightToCLipTextTo.toFloat
         } else {
           pos.getHeight
         }

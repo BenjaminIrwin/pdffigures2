@@ -1,14 +1,20 @@
 package org.allenai.pdffigures2
 
-import java.io.File
-import java.util.concurrent.atomic.AtomicInteger
-
-import ch.qos.logback.classic.{ Level, Logger }
+import ch.qos.logback.classic.Level
+import ch.qos.logback.classic.Logger
 import org.allenai.pdffigures2.FigureExtractor.DocumentWithSavedFigures
 import org.allenai.pdffigures2.JsonProtocol._
+import org.apache.pdfbox.Loader
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.slf4j.LoggerFactory
+import scopt.OptionParser
+import spray.json.RootJsonFormat
 
+import java.io.File
+import java.util.concurrent.ForkJoinPool
+import java.util.concurrent.atomic.AtomicInteger
+import scala.annotation.unused
+import scala.collection.parallel.CollectionConverters._
 import scala.collection.parallel.ForkJoinTaskSupport
 
 /** CLI tools to parse a batch of PDFs, and then save the figures, table, captions
@@ -23,8 +29,8 @@ object FigureExtractorBatchCli extends Logging {
     timeInMillis: Long
   )
   case class ProcessingError(filename: String, msg: Option[String], className: String)
-  implicit val processingStatisticsFormat = jsonFormat4(ProcessingStatistics.apply)
-  implicit val processingErrorFormat = jsonFormat3(ProcessingError.apply)
+  implicit val processingStatisticsFormat: RootJsonFormat[ProcessingStatistics] = jsonFormat4(ProcessingStatistics.apply)
+  implicit val processingErrorFormat: RootJsonFormat[ProcessingError] = jsonFormat3(ProcessingError.apply)
 
   case class CliConfigBatch(
     inputFiles: Seq[File] = Seq(),
@@ -40,9 +46,9 @@ object FigureExtractorBatchCli extends Logging {
     figureFormat: String = "png"
   )
 
-  val Parser = new scopt.OptionParser[CliConfigBatch]("figure-extractor-batch") {
-    head("figure-extractor-batch")
-    arg[Seq[String]]("<input>") required () action { (i, c) =>
+  val Parser: OptionParser[CliConfigBatch] = new scopt.OptionParser[CliConfigBatch]("figure-extractor-batch") {
+    this.head("figure-extractor-batch")
+    this.arg[Seq[String]]("<input>").required().action({ (i, c) =>
       val inputFiles =
         if (i.size == 1) {
           val file = new File(i.head)
@@ -55,50 +61,59 @@ object FigureExtractorBatchCli extends Logging {
           i.map(f => new File(f)).toList
         }
       c.copy(inputFiles = inputFiles)
-    } text "input PDF(s) or directory containing PDFs"
-    opt[Int]('i', "dpi") action { (dpi, c) =>
+    }).text("input PDF(s) or directory containing PDFs")
+
+    this.opt[Int]('i', "dpi").action({ (dpi, c) =>
       c.copy(dpi = dpi)
-    } text
-      "DPI to save the figures in (default 150)" validate { dpi =>
+    }).text("DPI to save the figures in (default 150)").validate({ dpi =>
       if (dpi > 0) success else failure("DPI must > 0")
-    }
-    opt[String]('s', "save-stats") action { (s, c) =>
+    })
+
+    this.opt[String]('s', "save-stats").action({ (s, c) =>
       c.copy(saveStats = Some(s))
-    } validate { s =>
+    }).validate({ s =>
       val f = new File(s)
-      if (!f.exists() || f.canWrite && !f.isDirectory) {
+      if (!f.exists() || (f.canWrite && !f.isDirectory)) {
         success
       } else {
         failure(s"Can't write to file $s")
       }
-    } text "Save the errors and timing information to the given file in JSON fromat"
-    opt[Int]('t', "threads") action { (t, c) =>
+    }).text("Save the errors and timing information to the given file in JSON fromat")
+
+    this.opt[Int]('t', "threads").action({ (t, c) =>
       c.copy(threads = t)
-    } validate { t =>
+    }).validate({ t =>
       if (t >= 0) success else failure("Threads must be >= 0")
-    } text "Number of threads to use, 0 means using Scala's default"
-    opt[Unit]('e', "ignore-error") action { (_, c) =>
+    }).text("Number of threads to use, 0 means using Scala's default")
+
+    this.opt[Unit]('e', "ignore-error").action({ (_, c) =>
       c.copy(ignoreErrors = true)
-    } text "Don't stop on errors, errors will be logged and also saved in `save-stats` if set"
-    opt[Unit]('q', "quiet") action { (_, c) =>
+    }).text("Don't stop on errors, errors will be logged and also saved in `save-stats` if set")
+
+    this.opt[Unit]('q', "quiet").action({ (_, c) =>
       c.copy(debugLogging = false)
-    } text "Switches logging to INFO level"
-    opt[String]('d', "figure-data-prefix") action { (o, c) =>
+    }).text("Switches logging to INFO level")
+
+    this.opt[String]('d', "figure-data-prefix").action({ (o, c) =>
       c.copy(figureDataPrefix = Some(o))
-    } text "Save JSON figure data to '<data-prefix><input_filename>.json'"
-    opt[Unit]('c', "save-regionless-captions") action { (_, c) =>
+    }).text("Save JSON figure data to '<data-prefix><input_filename>.json'")
+
+    this.opt[Unit]('c', "save-regionless-captions").action({ (_, c) =>
       c.copy(saveRegionlessCaptions = true)
-    } text "Include captions for which no figure regions were found in the JSON data"
-    opt[String]('g', "full-text-prefix") action { (f, c) =>
+    }).text("Include captions for which no figure regions were found in the JSON data")
+
+    this.opt[String]('g', "full-text-prefix").action({ (f, c) =>
       c.copy(fullTextPrefix = Some(f))
-    } text "Save the document and figures into '<full-text-prefix><input_filename>.json"
-    opt[String]('m', "figure-prefix") action { (f, c) =>
+    }).text("Save the document and figures into '<full-text-prefix><input_filename>.json")
+
+    this.opt[String]('m', "figure-prefix").action({ (f, c) =>
       c.copy(figureImagePrefix = Some(f))
-    } text "Save figures as <figure-prefix><input_filename>-<Table|Figure><Name>-<id>.png. `id` " +
-      "will be 1 unless multiple figures are found with the same `Name` in `input_filename`"
-    opt[String]('f', "figure-format") action { (f, c) =>
+    }).text("Save figures as <figure-prefix><input_filename>-<Table|Figure><Name>-<id>.png. `id` " +
+      "will be 1 unless multiple figures are found with the same `Name` in `input_filename`")
+
+    this.opt[String]('f', "figure-format").action({ (f, c) =>
       c.copy(figureFormat = f)
-    } text "Format to save figures (default png)" validate { x =>
+    }).text("Format to save figures (default png)").validate({ x =>
       if (FigureRenderer.AllowedFormats.contains(x)) {
         success
       } else {
@@ -107,20 +122,21 @@ object FigureExtractorBatchCli extends Logging {
             s"formats: ${FigureRenderer.AllowedFormats.mkString(",")}"
         )
       }
-    }
-    checkConfig { c =>
+    })
+
+    this.checkConfig({ c =>
       val badFiles =
         c.inputFiles.find(f => !f.exists() || f.isDirectory || !f.getName.endsWith(".pdf"))
       if (badFiles.isDefined) {
         failure(s"Input file ${badFiles.get.getName} is not a PDF file")
       } else if (c.saveRegionlessCaptions && c.fullTextPrefix.isDefined) {
-        failure(s"Can't set both save-regionless-captions and full-text")
+        failure("Can't set both save-regionless-captions and full-text")
       } else if (c.fullTextPrefix.isDefined && c.figureDataPrefix.isDefined) {
-        failure(s"Can't set both full-text and figure-data-prefix")
+        failure("Can't set both full-text and figure-data-prefix")
       } else {
         success
       }
-    }
+    })
   }
 
   def getFilenames(
@@ -145,7 +161,7 @@ object FigureExtractorBatchCli extends Logging {
     format: String,
     dpi: Int,
     figures: Seq[RasterizedFigure],
-    doc: PDDocument
+    @unused doc: PDDocument
   ): Seq[SavedFigure] = {
     val filenames = getFilenames(prefix, docName, format, figures.map(_.figure))
     FigureRenderer.saveRasterizedFigures(filenames.zip(figures), format, dpi)
@@ -159,7 +175,7 @@ object FigureExtractorBatchCli extends Logging {
     var doc: PDDocument = null
     val figureExtractor = FigureExtractor()
     try {
-      doc = PDDocument.load(inputFile)
+      doc = Loader.loadPDF(inputFile)
       val useCairo = FigureRenderer.CairoFormat.contains(config.figureFormat)
       val inputName = inputFile.getName
       val truncatedName = inputName.substring(0, inputName.lastIndexOf('.'))
@@ -306,7 +322,7 @@ object FigureExtractorBatchCli extends Logging {
       val parFiles = config.inputFiles.par
       if (config.threads != 0) {
         parFiles.tasksupport = new ForkJoinTaskSupport(
-          new scala.concurrent.forkjoin.ForkJoinPool(config.threads)
+          new ForkJoinPool(config.threads)
         )
       }
       val onPdf = new AtomicInteger(0)
@@ -332,7 +348,7 @@ object FigureExtractorBatchCli extends Logging {
       case _ => None
     }
     if (errors.isEmpty) {
-      logger.info(s"No errors")
+      logger.info("No errors")
     } else {
       val errorString = errors
         .map {

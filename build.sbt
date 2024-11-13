@@ -1,5 +1,5 @@
 lazy val scala212 = "2.12.20"
-lazy val scala213 = "2.13.8" // Not supported yet (collections changes required in common)
+lazy val scala213 = "2.13.15" // Not supported yet (collections changes required in common)
 lazy val supportedScalaVersions = List(scala212, scala213)
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
@@ -8,6 +8,12 @@ ThisBuild / organization := "org.allenai"
 ThisBuild / description  := "Scala library to extract figures, tables, and captions from scholarly documents"
 ThisBuild / scalaVersion := scala213
 ThisBuild / version      := "0.1.0"
+ThisBuild / semanticdbEnabled := true
+
+scalacOptions ++= Seq(
+  "-Wunused:imports",  // Required for OrganizeImports with removeUnused set to true
+  "-Wunused"           // Required for RemoveUnused rule
+)
 
 lazy val projectSettings = Seq(
   name := "pdffigures2",
@@ -24,6 +30,7 @@ lazy val projectSettings = Seq(
   bintrayOrganization := Some("allenai"),
   bintrayRepository := "maven",
   libraryDependencies ++= Seq(
+    "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4",
     "io.spray" %% "spray-json" % "1.3.6",
     "com.github.scopt" %% "scopt" % "4.1.0",
     "ch.qos.logback" % "logback-classic" % "1.5.6",

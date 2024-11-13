@@ -1,10 +1,10 @@
 package org.allenai.pdffigures2
 
 import org.apache.pdfbox.pdmodel.PDDocument
-import org.apache.pdfbox.rendering.{ ImageType, PDFRenderer }
+import org.apache.pdfbox.rendering.ImageType
+import org.apache.pdfbox.rendering.PDFRenderer
 
 import java.awt.image.BufferedImage
-
 import scala.collection.mutable
 
 /** Finds the bounding boxes of graphical elements in a PDF by rasterizing the PDF and
@@ -22,7 +22,7 @@ object FindGraphicsRaster {
 
   def findCCBoundingBoxes(doc: PDDocument, page: Int, remove: Iterable[Box]): List[Box] = {
     val renderer = new PDFRenderer(doc)
-    val img = renderer.renderImageWithDPI(page, DPI, ImageType.GRAY)
+    val img = renderer.renderImageWithDPI(page, DPI.toFloat, ImageType.GRAY)
     findCCBoundingBoxes(img, remove, Threshold, DPI / 72)
   }
 

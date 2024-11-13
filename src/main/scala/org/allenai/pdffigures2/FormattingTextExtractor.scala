@@ -51,7 +51,7 @@ object FormattingTextExtractor extends Logging {
     if (nonEmptyCandidates.size >= minConsistentHeaders) {
       // Check for identical text
       val groupedByText = nonEmptyCandidates.map(x => x.text).groupBy(x => x)
-      val (mostCommonText, count) = groupedByText.mapValues(_.size).maxBy(_._2)
+      val (mostCommonText, count) = groupedByText.view.mapValues(_.size).maxBy(_._2)
       if (count >= minConsistentHeaders) {
         candidates.map {
           case np: Some[Paragraph] if np.get.text == mostCommonText => np
@@ -221,7 +221,7 @@ object FormattingTextExtractor extends Logging {
       .find(_._2.nonEmpty)
     val abstractPageNum = if (documentAbstract.isDefined) Some(documentAbstract.get._1) else None
 
-    val textWithoutHeaders = (textPages, headers, pageNumbers).zipped.map {
+    val textWithoutHeaders = textPages.lazyZip(headers).lazyZip(pageNumbers).map {
       case (textPage, header, pageNumber) =>
         if (abstractPageNum.isDefined && abstractPageNum.get > textPage.pageNumber) {
           logger.debug(s"Marking page ${textPage.pageNumber} as a cover page")

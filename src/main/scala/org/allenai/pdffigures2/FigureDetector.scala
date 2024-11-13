@@ -1,5 +1,7 @@
 package org.allenai.pdffigures2
 
+import scala.annotation.unused
+
 object FigureDetector {
 
   private val MinProposalHeight = 15
@@ -232,7 +234,7 @@ object FigureDetector {
     */
   // TODO it would be nice to be able to do this for downwards proposals as well
   private def clipUpwardRegion(
-    caption: Box,
+    @unused caption: Box,
     region: Box,
     graphics: Seq[Box],
     otherText: Seq[Paragraph]
@@ -277,7 +279,7 @@ object FigureDetector {
   private def scoreProposal(
     proposal: Proposal,
     graphics: Seq[Box],
-    otherText: Seq[Box],
+    @unused otherText: Seq[Box],
     otherProposals: Seq[Proposal],
     bounds: Box
   ): Option[Double] = {
@@ -536,7 +538,7 @@ object FigureDetector {
   def locatedFigures(
     page: PageWithBodyText,
     layout: DocumentLayout,
-    log: Option[VisualLogger]
+    @unused log: Option[VisualLogger]
   ): PageWithFigures = {
     val proposals = buildProposals(page, layout)
     val proposalsWithCaptions = page.captions.zip(proposals)
@@ -560,7 +562,7 @@ object FigureDetector {
     } else {
       val bestConfiguration = cartesianProduct(validProposals.toList).view.zipWithIndex
         .map {
-          case (proposalsToUse, index) =>
+          case (proposalsToUse, _) =>
             var props = splitProposals(proposalsToUse, allContent).toList
             var scored = List[Proposal]()
             var scores = List[Option[Double]]()

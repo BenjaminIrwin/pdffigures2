@@ -6,12 +6,13 @@ import spray.json._
 import java.awt.image.BufferedImage
 import java.io._
 import javax.imageio.ImageIO
+import scala.annotation.unused
 
 /** Methods rendering figures as images and saving those images to disk */
 object FigureRenderer {
 
-  val CairoFormat = Set("ps", "eps", "pdf", "svg")
-  val AllowedFormats = CairoFormat ++ ImageIO.getWriterFormatNames
+  val CairoFormat: Set[String] = Set("ps", "eps", "pdf", "svg")
+  val AllowedFormats: Set[String] = CairoFormat ++ ImageIO.getWriterFormatNames
 
   /** Maximum pixels to expand rasterized figure when cleaning */
   private val MaxExpand = 20
@@ -99,7 +100,7 @@ object FigureRenderer {
         page.figures.map(_.captionBoundary)).map(_.scale(scale))
     var figureRegions = page.figures.map(_.regionBoundary).map(_.scale(scale))
     val renderer = new InterruptiblePDFRenderer(doc)
-    val pageImg = renderer.renderImageWithDPI(page.pageNumber, dpi)
+    val pageImg = renderer.renderImageWithDPI(page.pageNumber, dpi.toFloat)
     val rasterized = page.figures.zipWithIndex.map {
       case (fig, figureNumber) =>
         val otherFigureRegions =
@@ -140,7 +141,7 @@ object FigureRenderer {
   def saveRasterizedFigures(
     figuresAndFilenames: Seq[(String, RasterizedFigure)],
     format: String,
-    dpi: Int
+    @unused dpi: Int
   ): Seq[SavedFigure] = {
     require(ImageIO.getWriterFormatNames.contains(format), s"Can't save to format $format")
     figuresAndFilenames.map {
@@ -152,37 +153,58 @@ object FigureRenderer {
 
   /** Save figures to disk in a vector graphic format by shelling out to pdftocairo */
   def saveFiguresAsImagesCairo(
-    doc: PDDocument,
-    figuresAndFilenames: Seq[(String, Figure)],
-    format: String,
-    dpi: Int
-  ): Iterable[SavedFigure] = {
+                                doc: PDDocument,
+                                figuresAndFilenames: Seq[(String, Figure)],
+                                format: String,
+                                dpi: Int
+                              ): Iterable[SavedFigure] = {
     require(CairoFormat.contains(format), s"Cairo can't render to format $format")
     val groupedByPage = figuresAndFilenames.groupBy(_._2.page)
-    groupedByPage.flatMap {
-      case (pageNum, pageFigures) =>
-        val pageDoc = new PDDocument() // Save some IO by just sending cairo the relevant page
-        pageDoc.addPage(doc.getPage(pageNum))
-        val savedFigures = pageFigures.map {
-          case (filename, fig) =>
-            if (Thread.interrupted()) throw new InterruptedException()
-            val box = fig.regionBoundary
-            val x = Math.round(box.x1) - PadUnexpandedImage
-            val y = Math.round(box.y1) - PadUnexpandedImage
-            val w = Math.round(box.width) + PadUnexpandedImage * 2
-            val h = Math.round(box.height) + PadUnexpandedImage * 2
-            val cmdStr = s"pdftocairo -$format -r $dpi " +
-              s"-x $x -y $y -H $h -W $w -paperw $w -paperh $h - $filename"
-            val cmd = Runtime.getRuntime.exec(cmdStr)
-            val outStream = cmd.getOutputStream
-            pageDoc.save(outStream) // Stream the doc to cairo
-            if (cmd.waitFor() != 0) {
-              throw new IOException("Error using cairo to save a figure")
-            }
-            SavedFigure(fig, filename, dpi)
+    groupedByPage.flatMap { case (pageNum, pageFigures) =>
+      val pageDoc = new PDDocument() // Save some IO by just sending cairo the relevant page
+      pageDoc.addPage(doc.getPage(pageNum))
+      val savedFigures = pageFigures.map { case (filename, fig) =>
+        if (Thread.interrupted()) throw new InterruptedException()
+        val box = fig.regionBoundary
+        val x = Math.round(box.x1) - PadUnexpandedImage
+        val y = Math.round(box.y1) - PadUnexpandedImage
+        val w = Math.round(box.width) + PadUnexpandedImage * 2
+        val h = Math.round(box.height) + PadUnexpandedImage * 2
+
+        // Build the process with explicit arguments instead of shell string
+        val processBuilder = new ProcessBuilder(
+          "pdftocairo",
+          s"-$format",
+          "-r", dpi.toString,
+          "-x", x.toString,
+          "-y", y.toString,
+          "-H", h.toString,
+          "-W", w.toString,
+          "-paperw", w.toString,
+          "-paperh", h.toString,
+          "-",  // Read from stdin
+          filename
+        )
+
+        // Start the process
+        val process = processBuilder.start()
+
+        // Get output stream and save document
+        val outStream = process.getOutputStream
+        pageDoc.save(outStream) // Stream the doc to cairo
+        outStream.close() // Important to close the stream
+
+        // Wait for process to complete and check exit code
+        if (process.waitFor() != 0) {
+          // Optionally, you could read error stream here for more detailed error message
+          val errorStream = scala.io.Source.fromInputStream(process.getErrorStream).mkString
+          throw new IOException(s"Error using cairo to save figure: $errorStream")
         }
-        pageDoc.close()
-        savedFigures
+
+        SavedFigure(fig, filename, dpi)
+      }
+      pageDoc.close()
+      savedFigures
     }
   }
 
