@@ -1,18 +1,18 @@
 lazy val scala212 = "2.12.20"
 lazy val scala213 = "2.13.15"
-lazy val supportedScalaVersions = List(scala212, scala213)
+lazy val scala35 = "3.5.2"
+lazy val supportedScalaVersions = List(scala212, scala213, scala35)
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 ThisBuild / organization := "org.allenai"
 ThisBuild / description  := "Scala library to extract figures, tables, and captions from scholarly documents"
-ThisBuild / scalaVersion := scala213
+ThisBuild / scalaVersion := scala35
 ThisBuild / version      := "0.1.0"
 ThisBuild / semanticdbEnabled := true
 
 scalacOptions ++= Seq(
-  "-Wunused:imports",  // Required for OrganizeImports with removeUnused set to true
-  "-Wunused"           // Required for RemoveUnused rule
+  "-Wunused:all",
 )
 
 lazy val projectSettings = Seq(

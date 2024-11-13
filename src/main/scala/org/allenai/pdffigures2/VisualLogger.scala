@@ -1,6 +1,5 @@
 package org.allenai.pdffigures2
 
-import org.allenai.pdffigures2.Box
 import org.allenai.pdffigures2.SectionedTextBuilder.DocumentSection
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.rendering.PDFRenderer
@@ -9,7 +8,7 @@ import java.awt._
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
 import java.awt.image.BufferedImage
-import javax.swing._
+import javax.swing.{Box => _, _}
 
 case class Annotations(
   boxes: Seq[Box],

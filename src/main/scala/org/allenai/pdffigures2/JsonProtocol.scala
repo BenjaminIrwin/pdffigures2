@@ -6,22 +6,21 @@ import org.allenai.pdffigures2.SectionedTextBuilder.DocumentSection
 import org.allenai.pdffigures2.SectionedTextBuilder.PdfText
 import spray.json._
 
-// From https://github.com/spray/spray-json/issues/200
-// to support enum -> json conversion
-class EnumJsonConverter[T <: scala.Enumeration](enu: T) extends RootJsonFormat[T#Value] {
-  override def write(obj: T#Value): JsValue = JsString(obj.toString)
+class FigureTypeJsonConverter extends RootJsonFormat[FigureType.Value] {
+  override def write(obj: FigureType.Value): JsValue = JsString(obj.toString)
 
-  override def read(json: JsValue): T#Value = {
+  override def read(json: JsValue): FigureType.Value = {
     json match {
-      case JsString(txt) => enu.withName(txt)
-      case somethingElse => throw DeserializationException(s"Expected a value from enum $enu instead of $somethingElse")
+      case JsString(txt) => FigureType.withName(txt)
+      case somethingElse => throw DeserializationException(s"Expected a value from enum FigureType instead of $somethingElse")
     }
   }
 }
 
+
 trait JsonProtocol extends DefaultJsonProtocol {
   // JSON formats so we can write Figures/Captions/Documents to disk
-  implicit val enumConverter: EnumJsonConverter[FigureType.type] = new EnumJsonConverter(FigureType)
+  implicit val enumConverter: RootJsonFormat[FigureType.Value] = new FigureTypeJsonConverter()
   implicit val boxFormat: RootJsonFormat[Box] = jsonFormat4(Box.apply)
   implicit val captionFormat: RootJsonFormat[Caption] = jsonFormat5(Caption.apply)
   implicit val figureFormat: RootJsonFormat[Figure] = jsonFormat7(Figure.apply)
