@@ -41,9 +41,9 @@ lazy val projectSettings = Seq(
 
     // So PDFBox can parse more image formats
     // These are disabled by default, because they are not licensed flexibly enough.
-//    "com.github.jai-imageio" % "jai-imageio-core" % "1.4.0",
-//    "com.github.jai-imageio" % "jai-imageio-jpeg2000" % "1.4.0", // For handling jpeg2000 images
-//    "com.levigo.jbig2" % "levigo-jbig2-imageio" % "2.0", // For handling jbig2 images
+    "com.github.jai-imageio" % "jai-imageio-core" % "1.4.0",
+    "com.github.jai-imageio" % "jai-imageio-jpeg2000" % "1.4.0", // For handling jpeg2000 images
+    "com.levigo.jbig2" % "levigo-jbig2-imageio" % "2.0", // For handling jbig2 images
 
     // So PDFBox can parse security enabled but still readable PDFs
     "org.bouncycastle" % "bcprov-jdk18on" % "1.78.1",
