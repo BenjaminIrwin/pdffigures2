@@ -1,101 +1,51 @@
 [{
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2412.21139.pdf",
-  "numFigures": 16,
-  "numPages": 19,
-  "timeInMillis": 777
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2412.21188.pdf",
-  "numFigures": 43,
-  "numPages": 65,
-  "timeInMillis": 22979
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2412.21200.pdf",
-  "numFigures": 6,
-  "numPages": 5,
-  "timeInMillis": 71
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2412.21203.pdf",
-  "numFigures": 4,
-  "numPages": 84,
-  "timeInMillis": 399
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2412.21161.pdf",
-  "numFigures": 12,
-  "numPages": 6,
-  "timeInMillis": 42
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2412.21149.pdf",
-  "numFigures": 10,
-  "numPages": 19,
-  "timeInMillis": 115
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2412.21206.pdf",
-  "numFigures": 19,
-  "numPages": 22,
-  "timeInMillis": 205
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2412.21164.pdf",
-  "numFigures": 21,
-  "numPages": 11,
-  "timeInMillis": 881
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2412.21199.pdf",
-  "numFigures": 19,
-  "numPages": 27,
-  "timeInMillis": 1110
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2412.21205.pdf",
-  "numFigures": 14,
-  "numPages": 15,
-  "timeInMillis": 113
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2412.21198.pdf",
-  "numFigures": 13,
-  "numPages": 18,
-  "timeInMillis": 502
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2412.21156.pdf",
-  "numFigures": 17,
-  "numPages": 16,
-  "timeInMillis": 84
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2412.21155.pdf",
-  "numFigures": 0,
+  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.04003.pdf",
+  "numFigures": 34,
   "numPages": 41,
-  "timeInMillis": 139
+  "timeInMillis": 2439
 }, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2412.21197.pdf",
-  "numFigures": 15,
-  "numPages": 12,
-  "timeInMillis": 79
+  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.04002.pdf",
+  "numFigures": 0,
+  "numPages": 4,
+  "timeInMillis": 116
 }, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2412.21154.pdf",
-  "numFigures": 7,
-  "numPages": 24,
-  "timeInMillis": 99
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2412.21140.pdf",
-  "numFigures": 7,
-  "numPages": 17,
-  "timeInMillis": 55
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2412.21178.pdf",
+  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.04000.pdf",
   "numFigures": 14,
-  "numPages": 9,
-  "timeInMillis": 36
+  "numPages": 45,
+  "timeInMillis": 513
 }, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2412.21187.pdf",
-  "numFigures": 14,
+  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.04001.pdf",
+  "numFigures": 22,
   "numPages": 19,
-  "timeInMillis": 87
+  "timeInMillis": 339
 }, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2412.21151.pdf",
-  "numFigures": 6,
-  "numPages": 11,
-  "timeInMillis": 40
+  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.04005.pdf",
+  "numFigures": 9,
+  "numPages": 16,
+  "timeInMillis": 480
 }, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2412.21147.pdf",
-  "numFigures": 7,
-  "numPages": 7,
-  "timeInMillis": 56
+  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.04004.pdf",
+  "numFigures": 21,
+  "numPages": 26,
+  "timeInMillis": 487
+}, {
+  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.03999.pdf",
+  "numFigures": 1,
+  "numPages": 3,
+  "timeInMillis": 57
+}, {
+  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.03995.pdf",
+  "numFigures": 12,
+  "numPages": 8,
+  "timeInMillis": 64
+}, {
+  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.03993.pdf",
+  "numFigures": 34,
+  "numPages": 54,
+  "timeInMillis": 21109
+}, {
+  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.03992.pdf",
+  "numFigures": 24,
+  "numPages": 21,
+  "timeInMillis": 323
 }]
