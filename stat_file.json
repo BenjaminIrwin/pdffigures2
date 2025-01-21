@@ -1,51 +1,11 @@
 [{
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.04003.pdf",
-  "numFigures": 34,
-  "numPages": 41,
-  "timeInMillis": 2439
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.04002.pdf",
-  "numFigures": 0,
-  "numPages": 4,
-  "timeInMillis": 116
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.04000.pdf",
-  "numFigures": 14,
-  "numPages": 45,
-  "timeInMillis": 513
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.04001.pdf",
-  "numFigures": 22,
-  "numPages": 19,
-  "timeInMillis": 339
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.04005.pdf",
-  "numFigures": 9,
-  "numPages": 16,
-  "timeInMillis": 480
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.04004.pdf",
-  "numFigures": 21,
-  "numPages": 26,
-  "timeInMillis": 487
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.03999.pdf",
-  "numFigures": 1,
-  "numPages": 3,
-  "timeInMillis": 57
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.03995.pdf",
-  "numFigures": 12,
-  "numPages": 8,
-  "timeInMillis": 64
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.03993.pdf",
-  "numFigures": 34,
-  "numPages": 54,
-  "timeInMillis": 21109
-}, {
-  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.03992.pdf",
+  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.09456.pdf",
   "numFigures": 24,
-  "numPages": 21,
-  "timeInMillis": 323
+  "numPages": 10,
+  "timeInMillis": 829
+}, {
+  "filename": "/Users/benjaminirwin/PycharmProjects/aca/pdffigures2/../temp_data/arxiv/2501.09457.pdf",
+  "numFigures": 2,
+  "numPages": 7,
+  "timeInMillis": 107
 }]
